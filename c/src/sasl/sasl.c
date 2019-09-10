@@ -124,6 +124,11 @@ const char *pnx_sasl_get_remote_fqdn(pn_transport_t *transport)
   return transport->sasl ? transport->sasl->remote_fqdn : NULL;
 }
 
+const char *pnx_sasl_get_principal(pn_transport_t *transport)
+{
+    return transport->sasl ? transport->sasl->principal : NULL;
+}
+
 const char *pnx_sasl_get_selected_mechanism(pn_transport_t *transport)
 {
   return transport->sasl ? transport->sasl->selected_mechanism : NULL;
@@ -731,7 +736,7 @@ pn_sasl_t *pn_sasl(pn_transport_t *transport)
 
     sasl->impl_context = NULL;
     // Change this to just global_sasl_impl when we make cyrus opt in
-    sasl->impl = global_sasl_impl ? global_sasl_impl : cyrus_sasl_impl ? cyrus_sasl_impl : &default_sasl_impl;
+    sasl->impl = win_sasl_impl ? win_sasl_impl : global_sasl_impl ? global_sasl_impl : cyrus_sasl_impl ? cyrus_sasl_impl : &default_sasl_impl;
     sasl->client = !transport->server;
     sasl->selected_mechanism = NULL;
     sasl->included_mechanisms = NULL;
@@ -749,6 +754,7 @@ pn_sasl_t *pn_sasl(pn_transport_t *transport)
     sasl->desired_state = SASL_NONE;
     sasl->last_state = SASL_NONE;
     sasl->allow_insecure_mechs = false;
+    sasl->principal = NULL;
 
     transport->sasl = sasl;
   }
@@ -823,6 +829,19 @@ void pn_sasl_allowed_mechs(pn_sasl_t *sasl0, const char *mechs)
     pni_sasl_t *sasl = get_sasl_internal(sasl0);
     free(sasl->included_mechanisms);
     sasl->included_mechanisms = mechs ? pn_strdup(mechs) : NULL;
+}
+
+const char *pn_sasl_get_principal(pn_sasl_t *sasl0)
+{
+    pni_sasl_t *sasl = get_sasl_internal(sasl0);
+    return sasl->principal;
+}
+
+void pn_sasl_principal(pn_sasl_t *sasl0, const char *principal)
+{
+    pni_sasl_t *sasl = get_sasl_internal(sasl0);
+    free(sasl->principal);
+    sasl->principal= principal ? pn_strdup(principal) : NULL;
 }
 
 void pn_sasl_set_allow_insecure_mechs(pn_sasl_t *sasl0, bool insecure)

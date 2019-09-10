@@ -39,6 +39,8 @@ set(SSL_IMPL ${ssl_impl} CACHE STRING "Library to use for SSL/TLS support. Valid
 set(sasl_providers cyrus none)
 if (CyrusSASL_FOUND AND Threads_FOUND)
   set (sasl_impl cyrus)
+elseif (PN_WINAPI)
+  set (sasl_impl winapi)
 else ()
   set (sasl_impl none)
 endif ()
@@ -98,10 +100,12 @@ endif(PN_WINAPI)
 
 # Link in SASL if present
 if (SASL_IMPL STREQUAL cyrus)
-  set(pn_sasl_impl src/sasl/sasl.c src/sasl/default_sasl.c src/sasl/cyrus_sasl.c)
+  set(pn_sasl_impl src/sasl/sasl.c src/sasl/default_sasl.c src/sasl/cyrus_sasl.c src/sasl/win_stub.c)
   set(SASL_LIB CyrusSASL::CyrusSASL Threads::Threads)
+elseif (SASL_IMPL STREQUAL winapi)  
+  set(pn_sasl_impl src/sasl/sasl.c src/sasl/default_sasl.c src/sasl/win_sasl.c src/sasl/cyrus_stub.c)
 elseif (SASL_IMPL STREQUAL none)
-  set(pn_sasl_impl src/sasl/sasl.c src/sasl/default_sasl.c src/sasl/cyrus_stub.c)
+  set(pn_sasl_impl src/sasl/sasl.c src/sasl/default_sasl.c src/sasl/cyrus_stub.c src/sasl/win_stub.c)
 endif ()
 
 # Set Compiler extra flags for Solaris when using SunStudio
@@ -219,6 +223,7 @@ set (qpid-proton-platform-io
 set (qpid-proton-layers-all
   src/sasl/sasl.c
   src/sasl/default_sasl.c
+  src/sasl/win_sasl.c
   src/sasl/cyrus_sasl.c
   src/sasl/cyrus_stub.c
   src/ssl/openssl.c

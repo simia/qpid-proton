@@ -125,6 +125,7 @@ PN_EXTERN const char *pnx_sasl_get_username(pn_transport_t *transport);
 PN_EXTERN const char *pnx_sasl_get_password(pn_transport_t *transport);
 PN_EXTERN void  pnx_sasl_clear_password(pn_transport_t *transport);
 PN_EXTERN const char *pnx_sasl_get_remote_fqdn(pn_transport_t *transport);
+PN_EXTERN const char *pnx_sasl_get_principal(pn_transport_t *transport);
 PN_EXTERN const char *pnx_sasl_get_selected_mechanism(pn_transport_t *transport);
 
 PN_EXTERN void  pnx_sasl_set_bytes_out(pn_transport_t *transport, pn_bytes_t bytes);

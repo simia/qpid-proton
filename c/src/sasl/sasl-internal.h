@@ -30,6 +30,7 @@
 #include "proton/sasl-plugin.h"
 
 extern const pnx_sasl_implementation default_sasl_impl;
+extern const pnx_sasl_implementation * const win_sasl_impl;
 extern const pnx_sasl_implementation * const cyrus_sasl_impl;
 
 // SASL APIs used by transport code
@@ -58,6 +59,7 @@ struct pni_sasl_t {
   enum pnx_sasl_state last_state;
   bool allow_insecure_mechs;
   bool client;
+  char* principal;
 };
 
 #endif /* sasl-internal.h */
