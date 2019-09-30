@@ -1195,6 +1195,9 @@ PN_EXTERN pn_bytes_t pn_data_get_symbol(pn_data_t *data);
  */
 PN_EXTERN pn_bytes_t pn_data_get_bytes(pn_data_t *data);
 
+PN_EXTERN void pn_bytes_to_data(pn_bytes_t* pnBytes, char* bytes, size_t size);
+PN_EXTERN int pn_bytes_size(pn_bytes_t* bytes);
+
 /**
  * If the current node is a scalar value, return it as a pn_atom_t.
  *

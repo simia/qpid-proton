@@ -154,6 +154,8 @@ PN_EXTERN const char *pn_sasl_get_mech(pn_sasl_t *sasl);
  */
 PN_EXTERN void pn_sasl_allowed_mechs(pn_sasl_t *sasl, const char *mechs);
 
+PN_EXTERN void pn_sasl_principal(pn_sasl_t *sasl, const char *principal);
+
 /**
  * Boolean to allow use of clear text authentication mechanisms
  *

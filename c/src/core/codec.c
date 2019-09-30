@@ -2042,6 +2042,19 @@ pn_bytes_t pn_data_get_symbol(pn_data_t *data)
   }
 }
 
+void pn_bytes_to_data(pn_bytes_t* pnBytes, char* bytes, size_t size)
+{
+    if (size >= pnBytes->size)
+    {
+        memcpy(bytes, pnBytes->start, pnBytes->size);
+    }
+}
+
+int pn_bytes_size(pn_bytes_t* bytes)
+{
+    return bytes->size;
+}
+
 pn_bytes_t pn_data_get_bytes(pn_data_t *data)
 {
   pni_node_t *node = pni_data_current(data);
