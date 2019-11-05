@@ -48,3 +48,5 @@ testresults
 /.vs
 /.vscode
 /CMakeSettings.json
+*.filters
+*.vcxproj

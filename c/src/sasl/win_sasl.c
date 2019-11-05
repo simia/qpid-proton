@@ -102,7 +102,7 @@ void initialize_context(pn_transport_t *transport)
     SECURITY_STATUS maj_stat = InitializeSecurityContext(
         &cred,
         SecIsValidHandle(&context) ? &context : NULL,
-        (char*)pnx_sasl_get_principal(transport),//"POWELASA\\toka", //"PCTOKA1$",//"POWELASA\\toka", //temporary
+        (char*)pnx_sasl_get_principal(transport),
         ISC_REQ_MUTUAL_AUTH | ISC_REQ_ALLOCATE_MEMORY,
         0,
         SECURITY_NATIVE_DREP,
@@ -132,14 +132,9 @@ void win_sasl_prepare(pn_transport_t* transport)
 
 bool win_sasl_init_server(pn_transport_t* transport)
 {
-    // Setup to send SASL mechanisms frame
     pnx_sasl_set_desired_state(transport, SASL_POSTED_MECHANISMS);
     return true;
 }
-
-//#define TargetName  "powelasa.powel.com"
-//CredHandle hCred;
-//struct _SecHandle  hcText;
 
 bool win_sasl_init_client(pn_transport_t* transport)
 {
@@ -162,24 +157,20 @@ bool win_sasl_init_client(pn_transport_t* transport)
         &cred,
         &cred_expiry
     );
-
-    //check_retcode(maj_stat);
-
+    
     recv_tok_desc.ulVersion = SECBUFFER_VERSION;
     recv_tok_desc.cBuffers = 1;
     recv_tok_desc.pBuffers = &recv_tok;
     recv_tok.BufferType = SECBUFFER_TOKEN;
     recv_tok.cbBuffer = 0;
     recv_tok.pvBuffer = NULL;
-
-    //initialize_context();
+        
     pnx_sasl_set_context(transport, &context);
     return true;    
 }
 
 void win_sasl_impl_free(pn_transport_t *transport)
-{
-    //free(pnx_sasl_get_context(transport));
+{    
 }
 
 bool win_sasl_process_mechanisms(pn_transport_t *transport, const char *mechs)
@@ -191,13 +182,11 @@ bool win_sasl_process_mechanisms(pn_transport_t *transport, const char *mechs)
     return true;
 }
 
-// Server will offer only ANONYMOUS and EXTERNAL if appropriate
 const char *win_sasl_impl_list_mechs(pn_transport_t *transport)
 {
      return "GSSAPI";
 }
 
-// The selected mechanism has already been verified against the "allowed" list
 void win_sasl_process_init(pn_transport_t *transport, const char *mechanism, const pn_bytes_t *recv)
 {
     pnx_sasl_set_desired_state(transport, SASL_POSTED_OUTCOME);
@@ -212,9 +201,6 @@ void win_sasl_process_challenge(pn_transport_t *transport, const pn_bytes_t *rec
     initialize_context(transport);
     if (send_tok.pvBuffer != 0) { // Server expects another token
         pnx_sasl_set_bytes_out(transport, pn_bytes(send_tok.cbBuffer, (const char*)send_tok.pvBuffer));
-        /*if (maj_stat == SEC_E_OK) {
-            printf("\nAuthenticated!\n");
-        }*/
         pnx_sasl_set_desired_state(transport, SASL_POSTED_RESPONSE);
     }
 }
